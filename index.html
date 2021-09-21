@@ -8,6 +8,7 @@
     <title>Customer Management</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.15/tailwind.min.css">
     <script src="https://unpkg.com/vue@3.0.5"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 
 </head>
 
@@ -102,10 +103,10 @@
                             <input id="street" v-model="newCustomerFormData.address[0]"
                                 class="bg-indigo-100 rounded-md w-full h-12 p-2 text-indigo-800 text-lg placeholder-indigo-800"
                                 placeholder="Enter street here" />
-                            <input id="Enter your town" v-model="newCustomerFormData.address[1]"
+                            <input id="town" v-model="newCustomerFormData.address[1]"
                                 class="bg-indigo-100 rounded-md w-full h-12 p-2 text-indigo-800 text-lg placeholder-indigo-800"
                                 placeholder="Enter town here" />
-                            <input type="number" id="street" v-model="newCustomerFormData.address[2]"
+                            <input type="number" id="pincode" v-model="newCustomerFormData.address[2]"
                                 class="bg-indigo-100 rounded-md w-full h-12 p-2 text-indigo-800 text-lg placeholder-indigo-800"
                                 placeholder="Enter pincode here" />
 
@@ -138,61 +139,18 @@
                         gender: ""
                     },
                     errors: [],
-                    customerList: [
-                        {
-                            id: "1",
-                            name: "Vignesh",
-                            address: "18 voc street, Musiri, 621211",
-                            dob: "14-06-1996",
-                            occupation: "Software Developer",
-                            gender: "male"
-                        },
-                        {
-                            id: "2",
-                            name: "Vignesh",
-                            address: "18 voc street, Musiri, 621211",
-                            dob: "14-06-1996",
-                            occupation: "Software Developer",
-                            gender: "female"
-                        },
-                        {
-                            id: "3",
-                            name: "Vignesh",
-                            address: "18 voc street, Musiri, 621211",
-                            dob: "14-06-1996",
-                            occupation: "Software Developer",
-                            gender: "female"
-                        },
-                        {
-                            id: "1",
-                            name: "Vignesh",
-                            address: "18 voc street, Musiri, 621211",
-                            dob: "14-06-1996",
-                            occupation: "Software Developer",
-                            gender: "male"
-                        },
-                        {
-                            id: "1",
-                            name: "Vignesh",
-                            address: "18 voc street, Musiri, 621211",
-                            dob: "14-06-1996",
-                            occupation: "Software Developer",
-                            gender: "male"
-                        },
-                        {
-                            id: "1",
-                            name: "Vignesh",
-                            address: "18 voc street, Musiri, 621211",
-                            dob: "14-06-1996",
-                            occupation: "Software Developer",
-                            gender: "male"
-                        }
-                    ]
+                    customerList: []
                 }
             },
             methods: {
                 getCustomerList() {
                     console.log("Customer list API goes here")
+                    let requestURL = "http://127.0.0.1:8000/api/customers/?format=json"
+                    let response = axios.get(requestURL)
+                    console.log(response)
+                    if (response && response.results){
+                        this.customerList = response.results
+                    }
                 },
 
                 addCustomer() {
@@ -208,8 +166,8 @@
                 },
 
                 checkForm: function (e) {
-                    console.log("Submit triggerred", e)
-                    if (this.name && this.age) {
+                    
+                    if (this.name && this.gender && this.dob) {
                         return true;
                     }
 
@@ -238,6 +196,13 @@
                             occupation: 'Occupation required'
                         }
 
+                        this.errors.push(errMsg);
+                    }
+
+                    if (!this.street && !this.town && !this.pincode){
+                        let errMsg = {
+                            address: 'Address required'
+                        }
                         this.errors.push(errMsg);
                     }
 
