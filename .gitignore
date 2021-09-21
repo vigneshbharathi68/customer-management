@@ -1,1 +1,12 @@
-*/__pycache__/
+# Django #
+*.log
+*.pot
+*.pyc
+__pycache__
+db.sqlite3
+media
+customermanagementapi/customermanagementapi/__init__.py
+customermanagementapi/customermanagementapi/__pycache__/__init__.cpython-39.pyc
+customermanagementapi/customermanagementapi/__pycache__/settings.cpython-39.pyc
+customermanagementapi/customermanagementapi/__pycache__/urls.cpython-39.pyc
+customermanagementapi/customermanagementapi/__pycache__/wsgi.cpython-39.pyc

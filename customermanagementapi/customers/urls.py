@@ -1,14 +1,7 @@
-# -*- coding: utf-8 -*-
+from rest_framework import routers
+from .api import CustomersViewSet
 
-# Django modules
-from django.urls import path
+router = routers.DefaultRouter()
+router.register('api/customers', CustomersViewSet, 'customers')
 
-# local modules
-from . import views
-from .views import (
-    Customers
-)
-
-urlpatterns = [
-    path('help/', Customers.as_view(), name='logout_api'),
-]
+urlpatterns = router.urls
