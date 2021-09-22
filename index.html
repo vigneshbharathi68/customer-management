@@ -8,31 +8,33 @@
     <title>Customer Management</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.15/tailwind.min.css">
     <script src="https://unpkg.com/vue@3.0.5"></script>
-    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
 </head>
 
 <body class="bg-gray-300">
-    <div id="app" class="flex flex-row h-full mt-10 items-start px-2">
+    <h1 class="mx-auto text-4xl text-center">
+        Customer Management Portal
+    </h1>
+    <div id="app" class="relative flex flex-row h-full mt-10 items-start px-2">
         <div class="w-1/3 h-2/6 shadow-xl bg-indigo-600 overflow-hidden rounded-lg text-white">
             <div title="Add new Customer" class="flex flex-row rounded-lg p-1">
                 <h1 class="inline-block w-11/12 text-left text-xl font-semibold p-4">Customer list</h1>
-                <div @click="addCustomer(); customerAddForm=!customerAddForm" title="Add new Customer"
+                <div @click="customerAddForm=!customerAddForm" title="Add new Customer"
                     class="cursor-pointer flex items-center w-1/12">
                     <span class="w-10 bg-white rounded-full p-1">
                         <img class="mx-auto w-10" src="https://img.icons8.com/fluency/96/000000/plus-math.png" />
-
                     </span>
                 </div>
             </div>
 
             <div v-for="customer in customerList" :key="customer.id"
                 class="relative m-2 bg-white flex flex-row flex-wrap justify-start rounded p-2">
-                <div @click="deletePopup(customer.id)" title="Delete Customer"
+                <div @click="deleteCustomer(customer.id)" title="Delete Customer"
                     class="absolute p-2 cursor-pointer text-red-600 text-5xl font-semibold float-right right-0 top-0 align-top">
                     &times;
                 </div>
-                <img @click="editCustomer" title="Edit Customer Details"
+                <img @click="editCustomer(customer)" title="Edit Customer Details"
                     class="w-12 absolute p-2 cursor-pointer text-red-600 text-3xl font-semibold float-right right-0 bottom-0"
                     src="https://img.icons8.com/external-kiranshastry-lineal-color-kiranshastry/64/000000/external-edit-interface-kiranshastry-lineal-color-kiranshastry.png" />
                 <!-- <div @click="editPopup(customer.id)" title="Edit Customer"
@@ -64,40 +66,44 @@
             </div>
         </div>
         <div v-show="customerAddForm" class="w-2/3">
-            {{errors}}
             <div class="ml-2 h-full shadow-xl bg-white rounded-lg p-4">
 
                 <h1 class="text-center text-xl font-semibold p-4">Customer Add Form</h1>
                 <form @submit="checkForm" method="post" class="grid grid-cols-3 gap-2 py-4">
-                    <div class="flex flex-col input-container">
+                    <div class="relative flex flex-col input-container pb-8">
                         <label for="name" class="text-gray-500 text-lg font-semibold">Name</label>
                         <input id="name" v-model="newCustomerFormData.name"
                             class="bg-indigo-100 rounded-md w-full h-12 p-2 text-indigo-800 text-lg placeholder-indigo-800"
                             placeholder="Enter customer name here" />
+                        <span v-if="errors.name" class="absolute bottom-0 left-0 text-red-600">{{errors.name}}</span>
                     </div>
-                    <div class="flex flex-col input-container">
+                    <div class="relative flex flex-col input-container pb-8">
                         <label for="gender" class="text-gray-500 text-lg font-semibold">Gender</label>
                         <select name="gender" id="gender" v-model="newCustomerFormData.gender"
                             class="bg-indigo-100 rounded-md w-full h-12 p-2 text-indigo-800 text-lg placeholder-indigo-800">
                             <option value="male">male</option>
                             <option value="female">female</option>
                         </select>
+                        <span v-if="errors.gender"
+                            class="absolute bottom-0 left-0 text-red-600">{{errors.gender}}</span>
                         <!--           <input id="name" type="dropdown" class="bg-indigo-100 rounded-md w-full h-12 p-2 text-indigo-800 text-lg placeholder-indigo-800" placeholder="Enter customer name here"/> -->
                     </div>
-                    <div class="flex flex-col input-container pb-2">
+                    <div class="relative flex flex-col input-container pb-8">
                         <label for="DOB" class="text-gray-500 text-lg font-semibold">DOB</label>
                         <input id="DOB" type="date" v-model="newCustomerFormData.dob"
                             class="bg-indigo-100 rounded-md w-full h-12 p-2 text-indigo-800 text-lg placeholder-indigo-800"
                             placeholder="" />
-                        <span v-if="errors.length">{{errors.age}}</span>
+                        <span v-if="errors.dob" class="absolute bottom-0 left-0 text-red-600">{{errors.dob}}</span>
                     </div>
-                    <div class="col-start-1 col-end-3 flex flex-col input-container">
+                    <div class="relative col-start-1 col-end-3 flex flex-col input-container pb-8">
                         <label for="occupation" class="text-gray-500 text-lg font-semibold">Occupation</label>
-                        <input id="occupation" v-model="newCustomerFormData.ocupation"
+                        <input id="occupation" v-model="newCustomerFormData.occupation"
                             class="bg-indigo-100 rounded-md w-full h-12 p-2 text-indigo-800 text-lg placeholder-indigo-800"
                             placeholder="Enter customer occupation here" />
+                        <span v-if="errors.occupation"
+                            class="absolute bottom-0 left-0 text-red-600">{{errors.occupation}}</span>
                     </div>
-                    <div class="flex flex-col col-start-1 col-end-4 input-container">
+                    <div class="relative flex flex-col col-start-1 col-end-4 input-container pb-8">
                         <label for="address" class="text-gray-500 text-lg font-semibold">Address</label>
                         <div class="flex flex-row gap-2">
                             <input id="street" v-model="newCustomerFormData.address[0]"
@@ -111,6 +117,8 @@
                                 placeholder="Enter pincode here" />
 
                         </div>
+                        <span v-if="errors.address"
+                            class="absolute bottom-0 left-0 text-red-600">{{errors.address}}</span>
 
                     </div>
                     <div class="col-start-3 flex gap-2">
@@ -133,77 +141,107 @@
                     customerAddForm: false,
                     newCustomerFormData: {
                         name: "",
-                        address: ["", "", ""],
-                        dob: "",
+                        gender: "",
                         occupation: "",
-                        gender: ""
+                        dob: "",
+                        address: ["", "", ""]
                     },
-                    errors: [],
-                    customerList: []
+                    errors: {},
+                    customerList: [],
                 }
             },
             methods: {
-                getCustomerList() {
+                async getCustomerList() {
                     console.log("Customer list API goes here")
                     let requestURL = "http://127.0.0.1:8000/api/customers/?format=json"
-                    let response = axios.get(requestURL)
-                    console.log(response)
-                    if (response && response.results){
-                        this.customerList = response.results
+                    let response = await axios.get(requestURL)
+                    console.log(response.data.results)
+                    if (response && response.data) {
+                        this.customerList = response.data.results
                     }
                 },
 
-                addCustomer() {
-                    console.log("Add customer API goes here")
+                async addCustomer() {
+                    this.getCustomerList()
+
                 },
 
-                editCustomer() {
-                    console.log("Edit Customer detail api goes here")
+                editCustomer(data) {
+                    console.log("Edit Customer detail api goes here", data)
+                    this.newCustomerFormData = {
+                        name: data.name,
+                        gender: data.gender,
+                        occupation: data.occupation,
+                        dob: data.dob,
+                        address: data.address
+                    }
+                    this.customerAddForm = true
                 },
 
-                deleteCustomer() {
-                    console.log("Delete customer API goes here")
+                async deleteCustomer(id) {
+                    if (confirm) {
+                        this.customerList = this.customerList.filter((el) => {
+                            el.id != id
+                        })
+                        console.log("Delete customer API goes here")
+                        let requestURL = `http://127.0.0.1:8000/api/customers/${id}/`
+                        axios.delete(requestURL)
+                            .then((response) => {
+                                console.log(response)
+                                this.getCustomerList()
+
+                            })
+
+                    }
                 },
 
-                checkForm: function (e) {
-                    
-                    if (this.name && this.gender && this.dob) {
-                        return true;
+                checkForm: async function (e) {
+                    if (this.newCustomerFormData.name && this.newCustomerFormData.gender && this.newCustomerFormData.dob &&
+                        this.newCustomerFormData.occupation && this.newCustomerFormData.address[0] && this.newCustomerFormData.address[1] && this.newCustomerFormData.address[2]) {
+                        let data = {
+                            "name": this.newCustomerFormData.name,
+                            "gender": this.newCustomerFormData.gender,
+                            "dob": this.newCustomerFormData.dob,
+                            "occupation": this.newCustomerFormData.occupation,
+                            "address": `${this.newCustomerFormData.address[0]}, ${this.newCustomerFormData.address[1]}, ${this.newCustomerFormData.address[2]}`,
+                        }
+                        let requestURL = "http://127.0.0.1:8000/api/customers/"
+                        axios.post(requestURL, data)
+                            .then((response) => {
+                                console.log(response)
+                                this.customerAddForm = false;
+                                this.errors = new Object();
+                                this.newCustomerFormData = {
+                                    name: "",
+                                    gender: "",
+                                    occupation: "",
+                                    dob: "",
+                                    address: ["", "", ""]
+                                }
+                                this.getCustomerList()
+
+                            })
+
                     }
 
-                    this.errors = [];
+                    this.errors = new Object();
 
-                    if (!this.name) {
-                        let errMsg = {
-                            name: 'Name required.'
-                        }
-                        this.errors.push(errMsg);
+                    if (!this.newCustomerFormData.name) {
+                        this.errors["name"] = 'Name required.'
                     }
-                    if (!this.gender) {
-                        let errMsg = {
-                            gender: 'Gender required.'
-                        }
-                        this.errors.push(errMsg);
+                    if (!this.newCustomerFormData.gender) {
+                        this.errors["gender"] = 'Gender required.'
                     }
-                    if (!this.dob) {
-                        let errMsg = {
-                            dob: 'Date of Birth required'
-                        }
-                        this.errors.push(errMsg);
+                    if (!this.newCustomerFormData.dob) {
+                        this.errors["dob"] = 'Date of Birth required'
                     }
-                    if (!this.occupation) {
-                        let errMsg = {
-                            occupation: 'Occupation required'
-                        }
+                    if (!this.newCustomerFormData.occupation) {
+                        this.errors["occupation"] = 'Occupation required'
 
-                        this.errors.push(errMsg);
                     }
 
-                    if (!this.street && !this.town && !this.pincode){
-                        let errMsg = {
-                            address: 'Address required'
-                        }
-                        this.errors.push(errMsg);
+                    if (!this.newCustomerFormData.address[0] && !this.newCustomerFormData.address[1] && !this.newCustomerFormData.address[2]) {
+                        this.errors["address"] = 'Address required'
                     }
 
 
@@ -213,9 +251,10 @@
                 }
 
             },
-            created: function () {
+            created: async function () {
                 //Api call for customer list
                 this.getCustomerList()
+
             }
         })
 
